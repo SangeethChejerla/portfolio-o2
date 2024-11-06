@@ -6,6 +6,7 @@ const withMDX = createMDX();
 const config = {
   reactStrictMode: true,
   missingSuspenseWithCSRBailout: false,
+  pageExtensions: ['ts', 'tsx', 'mdx'],
 };
 
 export default withMDX(config);
