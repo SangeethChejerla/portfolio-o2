@@ -1,0 +1,54 @@
+---
+title: FastAPI Intro
+description: Let's understand the gist of FastAPI.
+date: 2024-11-4
+tags: ['web development']
+---
+
+# FastAPI Intro
+
+If you're into web development and haven't heard of FastAPI yet, you're in for a treat. FastAPI is like the cool, new kid on the block in the world of Python web frameworks. Here's why it's worth your time:
+
+## What is FastAPI?
+
+FastAPI is a modern, fast (hence the name), web framework for building APIs with Python 3.6+. It's designed to be fast and intuitive, leveraging type hints to boost both performance and developer productivity.
+
+## Key Features
+
+- **High Performance**: It's built on top of Starlette and Pydantic, which means it's not just fast, it's lightning fast. We're talking about handling thousands of requests per second with ease.
+
+- **Async Support**: FastAPI supports asynchronous programming out of the box, which is perfect for handling I/O-bound tasks efficiently.
+
+- **Automatic Interactive Documentation**: With FastAPI, you get Swagger UI and ReDoc automatically. This means less work for you in documenting your API.
+
+- **Type Hints**: By using Python's type hints, FastAPI can validate your data, generate documentation, and even serialize/deserialize your data automatically.
+
+- **Standard Python Type System**: This isn't just about validation; it's about making your code more readable and maintainable.
+
+## Why Choose FastAPI?
+
+- **Speed**: If performance is critical for your application, FastAPI is a top contender.
+
+- **Ease of Use**: The syntax is clean and intuitive. If you know Python, you'll pick up FastAPI quickly.
+
+- **Modern**: It's designed with modern Python in mind, leveraging the latest language features.
+
+- **Ecosystem**: It plays nicely with other tools and frameworks, making it versatile for various projects.
+
+## A Simple Example
+
+Here's a quick example to get you started:
+
+```python
+from fastapi import FastAPI
+
+app = FastAPI()
+
+@app.get("/")
+async def read_root():
+    return {"Hello": "World"}
+
+@app.get("/items/{item_id}")
+async def read_item(item_id: int, q: str = None):
+    return {"item_id": item_id, "q": q}
+```

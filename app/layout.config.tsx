@@ -9,12 +9,12 @@ import type { BaseLayoutProps } from 'fumadocs-ui/layouts/shared';
  */
 export const baseOptions: BaseLayoutProps = {
   nav: {
-    title: 'My App',
+    title: 'Aryayama Nyx',
   },
   links: [
     {
-      text: 'Documentation',
-      url: '/docs',
+      text: 'blog',
+      url: '/blog',
       active: 'nested-url',
     },
   ],
