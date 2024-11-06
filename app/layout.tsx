@@ -1,7 +1,6 @@
 import { RootProvider } from 'fumadocs-ui/provider';
 import { Inter } from 'next/font/google';
 import type { ReactNode } from 'react';
-import { LoadingProvider } from './_components/LoadingProvider';
 import './global.css';
 
 const inter = Inter({
@@ -15,7 +14,7 @@ export default function Layout({ children }: { children: ReactNode }) {
         <RootProvider>
           {' '}
           <main className="w-full mx-auto px-4 min-h-screen max-w-3xl py-12">
-            <LoadingProvider>{children}</LoadingProvider>
+            {children}
           </main>
         </RootProvider>
       </body>
