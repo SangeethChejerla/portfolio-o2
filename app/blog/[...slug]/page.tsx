@@ -9,40 +9,59 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import Header from '../../_components/Header';
 
-// Define the structure of your post data
 interface PostData {
   title: string;
   date: string;
   description?: string;
   tags?: string[];
-  body: any; // Adjust type if you have a more specific type for MDX content
+  body: React.ComponentType<any>;
 }
 
-// Define the structure of a page from source.getPage()
 interface Page {
   url: string;
   slugs: string[];
   data: PostData;
 }
 
-export default async function Page(props: {
-  params: Promise<{ slug: string[] }>;
-}) {
-  const params = await props.params;
-  const post = source.getPage(params.slug) as Page | undefined;
-  const posts = source.getPages() as unknown as Page[];
+interface PageProps {
+  params: Promise<{
+    slug: string[];
+  }>;
+}
+
+interface PostIndex extends Page {
+  previous: Page | null;
+  next: Page | null;
+}
+
+export default async function Page(props: PageProps) {
+  const { slug } = await props.params;
+
+  if (!slug) {
+    notFound();
+  }
+
+  const post = source.getPage(slug) as Page | undefined;
   if (!post) {
     notFound();
   }
 
-  const postsIndex = posts.reduce((acc, post, index) => {
-    acc[post.slugs.join('/')] = {
-      ...post,
-      previous: posts[index - 1] || null,
-      next: posts[index + 1] || null,
-    };
-    return acc;
-  }, {} as Record<string, { previous: Page | null; next: Page | null } & Page>);
+  // Get all posts and create the index with proper typing
+  const posts = source.getPages() as unknown as Page[];
+  const postsIndex = posts.reduce<Record<string, PostIndex>>(
+    (acc, post, index) => {
+      acc[post.slugs.join('/')] = {
+        ...post,
+        previous: posts[index - 1] || null,
+        next: posts[index + 1] || null,
+      };
+      return acc;
+    },
+    {}
+  );
+
+  const currentPostIndex = postsIndex[post.slugs.join('/')];
+  const PostBody = post.data.body;
 
   return (
     <PageTransition>
@@ -50,15 +69,14 @@ export default async function Page(props: {
         <Header
           title={post.data.title}
           description={
-            post.data.description === undefined
-              ? formatRelativeDate(new Date(post.data.date))
-              : post.data.description
+            post.data.description ??
+            formatRelativeDate(new Date(post.data.date))
           }
           link={{ href: '/blog', text: 'blog' }}
         />
 
         <DocsBody>
-          <post.data.body
+          <PostBody
             data-animate
             data-animate-speed="fast"
             className="mdx"
@@ -72,21 +90,21 @@ export default async function Page(props: {
             <h2 className="opacity-60">Previous Post / Next Post</h2>
           </div>
           <div className="flex justify-between">
-            {postsIndex[post.slugs.join('/')].previous && (
+            {currentPostIndex.previous && (
               <Link
-                href={postsIndex[post.slugs.join('/')].previous!.url}
+                href={currentPostIndex.previous.url}
                 className="text-primary hover:bg-secondary/100 rounded-md px-2 py-1"
               >
-                ← {postsIndex[post.slugs.join('/')].previous!.data.title}
+                ← {currentPostIndex.previous.data.title}
               </Link>
             )}
 
-            {postsIndex[post.slugs.join('/')].next && (
+            {currentPostIndex.next && (
               <Link
-                href={postsIndex[post.slugs.join('/')].next!.url}
+                href={currentPostIndex.next.url}
                 className="text-primary hover:bg-secondary/100 rounded-md px-2 py-1"
               >
-                {postsIndex[post.slugs.join('/')].next!.data.title} →
+                {currentPostIndex.next.data.title} →
               </Link>
             )}
           </div>
@@ -100,11 +118,14 @@ export async function generateStaticParams() {
   return source.generateParams();
 }
 
-export async function generateMetadata(props: {
-  params: Promise<{ slug?: string[] }>;
-}) {
-  const params = await props.params;
-  const page = source.getPage(params.slug) as Page | undefined;
+export async function generateMetadata(props: PageProps) {
+  const { slug } = await props.params;
+
+  if (!slug) {
+    notFound();
+  }
+
+  const page = source.getPage(slug) as Page | undefined;
   if (!page) {
     notFound();
   }
@@ -112,6 +133,6 @@ export async function generateMetadata(props: {
   return NewMetadata({
     title: page.data.title,
     description: page.data.description,
-    tags: page.data.tags, // Assuming NewMetadata accepts tags
+    tags: page.data.tags,
   });
 }
