@@ -35,10 +35,12 @@ interface PostIndex extends Page {
 
 export default async function Page({ params }: PageProps) {
   try {
-    const { slug } = await params; // Destructure slug from params
+    const { slug } = await params;
+
+    console.log('Slug:', slug); // Debugging slug
 
     if (!slug || slug.length === 0) {
-      console.error('No slug provided in params.');
+      console.error('No slug provided.');
       notFound();
     }
 
@@ -109,7 +111,7 @@ export default async function Page({ params }: PageProps) {
       </PageTransition>
     );
   } catch (error) {
-    console.error('Error occurred while rendering the page:', error);
+    console.error('Error occurred while prerendering page:', error);
     notFound();
   }
 }
@@ -117,6 +119,7 @@ export default async function Page({ params }: PageProps) {
 export async function generateStaticParams() {
   try {
     const params = await source.generateParams();
+    console.log('Generated Static Params:', params); // Debugging static params
     return params;
   } catch (error) {
     console.error('Error generating static params:', error);
@@ -126,10 +129,10 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: PageProps) {
   try {
-    const { slug } = await params; // Destructure slug from params
+    const { slug } = await params;
 
     if (!slug || slug.length === 0) {
-      console.error('No slug provided in params for metadata.');
+      console.error('No slug for metadata.');
       notFound();
     }
 
