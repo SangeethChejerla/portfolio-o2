@@ -33,14 +33,14 @@ interface PostIndex extends Page {
   next: Page | null;
 }
 
+// Main page component
 export default async function Page({ params }: PageProps) {
   try {
     const { slug } = await params;
-
-    console.log('Slug:', slug); // Debugging slug
+    console.log('Rendering page for slug:', slug); // Debugging slug
 
     if (!slug || slug.length === 0) {
-      console.error('No slug provided.');
+      console.error('No slug provided!');
       notFound();
     }
 
@@ -50,6 +50,7 @@ export default async function Page({ params }: PageProps) {
       notFound();
     }
 
+    // Build the index for the posts to navigate to previous and next
     const posts = source.getPages();
     const postsIndex = posts.reduce<Record<string, PostIndex>>(
       (acc, post, index) => {
@@ -63,8 +64,15 @@ export default async function Page({ params }: PageProps) {
       {}
     );
 
+    // Get current post navigation
     const currentPostIndex = postsIndex[post.slugs.join('/')];
     const PostBody = post.data.body;
+
+    // Ensure that there is content to render
+    if (!PostBody) {
+      console.error(`Post body not found for slug: ${slug}`);
+      return <div>Content not available</div>;
+    }
 
     return (
       <PageTransition>
@@ -111,34 +119,37 @@ export default async function Page({ params }: PageProps) {
       </PageTransition>
     );
   } catch (error) {
-    console.error('Error occurred while prerendering page:', error);
-    notFound();
+    console.error('Error during page render:', error);
+    return <div>Something went wrong.</div>; // Fallback UI for errors
   }
 }
 
+// Static Params generation
 export async function generateStaticParams() {
   try {
     const params = await source.generateParams();
-    console.log('Generated Static Params:', params); // Debugging static params
+    console.log('Generated static params:', params); // Debugging params
     return params;
   } catch (error) {
     console.error('Error generating static params:', error);
-    return [];
+    return []; // Return an empty array if there is an error
   }
 }
 
+// Metadata generation
 export async function generateMetadata({ params }: PageProps) {
   try {
     const { slug } = await params;
+    console.log('Generating metadata for slug:', slug);
 
     if (!slug || slug.length === 0) {
-      console.error('No slug for metadata.');
+      console.error('No slug provided!');
       notFound();
     }
 
     const page = source.getPage(slug) as Page | undefined;
     if (!page) {
-      console.error(`Metadata not found for slug: ${slug}`);
+      console.error(`Page not found for slug: ${slug}`);
       notFound();
     }
 
@@ -149,6 +160,6 @@ export async function generateMetadata({ params }: PageProps) {
     });
   } catch (error) {
     console.error('Error generating metadata:', error);
-    notFound();
+    return {}; // Return empty metadata in case of error
   }
 }
