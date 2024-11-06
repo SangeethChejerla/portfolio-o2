@@ -13,7 +13,7 @@ import Header from '../../_components/Header';
 
 interface PostData {
   title: string;
-  date: string;
+  date: Date; // Change this to `Date` to match the source data
   description?: string;
   tags?: string[];
   body: React.ComponentType<any>;
@@ -26,9 +26,9 @@ interface Page {
 }
 
 interface PageProps {
-  params: Promise<{
+  params: {
     slug: string[];
-  }>;
+  };
 }
 
 interface PostIndex extends Page {
@@ -37,7 +37,7 @@ interface PostIndex extends Page {
 }
 
 export default async function Page(props: PageProps) {
-  const { slug } = await props.params;
+  const { slug } = await props.params; // Await params here
 
   if (!slug) {
     notFound();
@@ -48,8 +48,7 @@ export default async function Page(props: PageProps) {
     notFound();
   }
 
-  // Get all posts and create the index with proper typing
-  const posts = source.getPages() as unknown as Page[];
+  const posts = source.getPages(); // Ensure correct typing here
   const postsIndex = posts.reduce<Record<string, PostIndex>>(
     (acc, post, index) => {
       acc[post.slugs.join('/')] = {
@@ -112,11 +111,11 @@ export default async function Page(props: PageProps) {
 }
 
 export async function generateStaticParams() {
-  return source.generateParams();
+  return source.generateParams(); // Ensure this function returns the correct params
 }
 
 export async function generateMetadata(props: PageProps) {
-  const { slug } = await props.params;
+  const { slug } = await props.params; // Await params here
 
   if (!slug) {
     notFound();

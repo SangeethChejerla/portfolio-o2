@@ -1,6 +1,3 @@
-// components/PostNavigation.tsx
-'use client';
-
 import Link from 'next/link';
 
 interface PostNavigationProps {
