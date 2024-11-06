@@ -1,164 +1,234 @@
 'use client';
 
-import { AnimatePresence, motion } from 'framer-motion';
-import { highlight } from 'prismjs';
-import 'prismjs/components/prism-jsx';
-import 'prismjs/components/prism-typescript';
-import 'prismjs/themes/prism-tomorrow.css';
-import { useCallback, useState } from 'react';
+import copy from 'clipboard-copy';
+import { highlight } from 'sugar-high';
 
-interface CodeBlockProps {
+import { CheckIcon, CopyIcon } from '@radix-ui/react-icons';
+import { useEffect, useState } from 'react';
+
+async function handleCopyClick(content: string) {
+  try {
+    await copy(content);
+  } catch (error) {
+    console.error('Failed to copy text to clipboard', error);
+  }
+}
+
+function parseTemplate(template: string) {
+  const regex = /{{([^}]+)}}/g;
+  const result = [];
+  let lastIndex = 0;
+  let match;
+
+  if (template[0] === '\n') {
+    lastIndex = 1;
+  }
+
+  while ((match = regex.exec(template))) {
+    if (match.index > lastIndex) {
+      result.push({
+        data: template.slice(lastIndex, match.index),
+        type: 'static',
+      });
+    }
+    result.push({
+      data: match[1],
+      type: 'dynamic',
+    });
+    lastIndex = match.index + match[0].length;
+  }
+  if (lastIndex < template.length) {
+    result.push({
+      data: template.slice(lastIndex),
+      type: 'static',
+    });
+  }
+  return result;
+}
+
+export function ModCodeBlock({
+  template,
+  data,
+}: {
+  template: string;
+  data: { [key: string]: string };
+}) {
+  const parsedTemplate = parseTemplate(template);
+
+  const [state, setState] = useState(data);
+
+  const [onFocus, setOnFocus] = useState(
+    new Array(Object.keys(data).length).fill(false)
+  );
+
+  useEffect(() => {
+    setState(data);
+  }, [data]);
+
+  const stateUpdate = (key: string, value: string) => {
+    setState((prev) => ({
+      ...prev,
+      [key]: value,
+    }));
+  };
+
+  const [onCopy, setOnCopy] = useState(false);
+
+  useEffect(() => {
+    if (onCopy) {
+      setTimeout(() => {
+        setOnCopy(false);
+      }, 1000);
+    }
+  }, [onCopy]);
+
+  return (
+    <div className="flex flex-col gap-1">
+      <pre style={{ marginBottom: 0 }}>
+        <div
+          className="invisible absolute right-3 top-3 hover:cursor-pointer border rounded-md p-1 bg-card"
+          onClick={() => {
+            setOnCopy(true);
+            handleCopyClick(
+              parsedTemplate
+                .map(({ data, type }) => {
+                  if (type === 'static') {
+                    return data;
+                  } else if (type === 'dynamic' && data === '%TAB') {
+                    return '    ';
+                  } else {
+                    return state[data];
+                  }
+                })
+                .join('')
+            );
+          }}
+        >
+          <CopyIcon className={!onCopy ? 'block' : 'hidden'} />
+          <CheckIcon className={onCopy ? 'block' : 'hidden'} />
+        </div>
+
+        <div style={{ overflowX: 'auto' }}>
+          <code>
+            {parsedTemplate.map(({ data, type }, i) => {
+              if (type === 'static') {
+                return <span key={i}>{data}</span>;
+              } else if (type === 'dynamic' && data === '%TAB') {
+                return <span key={i}>&nbsp;&nbsp;&nbsp;&nbsp;</span>;
+              } else {
+                return onFocus[i] ? (
+                  <input
+                    type="text"
+                    autoFocus
+                    //
+                    className={`inline bg-secondary px-1 py-0.5 rounded-md h-5`}
+                    key={i}
+                    value={state[data]}
+                    onFocus={(e) => {
+                      const input = e.target;
+                      input.style.width = input.value.length + 2 + 'ch';
+                    }}
+                    onChange={(e) => {
+                      stateUpdate(data, e.target.value);
+
+                      const input = e.target;
+                      input.style.width = input.value.length + 2 + 'ch';
+                    }}
+                    onBlur={() =>
+                      setOnFocus((prev) => {
+                        const newFocus = [...prev];
+                        newFocus[i] = false;
+                        return newFocus;
+                      })
+                    }
+                    onKeyDown={(e: any) => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault();
+                        e.target.blur();
+                      }
+                    }}
+                  />
+                ) : (
+                  <span
+                    key={i}
+                    onClick={() => {
+                      setOnFocus((prev) => {
+                        const newFocus = [...prev];
+                        newFocus[i] = true;
+                        return newFocus;
+                      });
+                    }}
+                    className="cursor-pointer bg-secondary px-1 py-0.5 rounded-md text-blue-500 hover:text-white hover:bg-blue-500"
+                  >
+                    {state[data] || `plz enter \`${data}\``}
+                  </span>
+                );
+              }
+            })}
+          </code>
+        </div>
+      </pre>
+
+      <div className="text-xs text-gray-500 pl-1 mb-4">
+        *파란색 텍스트를 클릭하면 간편하게 수정 후 복사할 수 있습니다.
+      </div>
+    </div>
+  );
+}
+
+export function CodeBlock({
+  code,
+  language = '',
+}: {
   code: string;
   language?: string;
-  showLineNumbers?: boolean;
-  editable?: boolean;
-  onCodeChange?: (code: string) => void;
-}
+}) {
+  const isPlain =
+    language === 'plaintext' ||
+    language === 'text' ||
+    language === 'plain' ||
+    language === 'nohighlight' ||
+    language === '';
 
-const CodeBlock: React.FC<CodeBlockProps> = ({
-  code,
-  language = 'typescript',
-  showLineNumbers = true,
-  editable = false,
-  onCodeChange,
-}) => {
-  const [isCopied, setIsCopied] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
-  const [editableCode, setEditableCode] = useState(code);
+  const [onCopy, setOnCopy] = useState(false);
 
-  // Syntax highlighting
-  const highlightCode = useCallback(
-    (codeString: string) => {
-      if (!language) return codeString;
-      return highlight(codeString, language);
-    },
-    [language]
-  );
-
-  // Copy to clipboard functionality
-  const copyToClipboard = async () => {
-    try {
-      await navigator.clipboard.writeText(editableCode);
-      setIsCopied(true);
-      setTimeout(() => setIsCopied(false), 2000);
-    } catch (err) {
-      console.error('Failed to copy code:', err);
+  useEffect(() => {
+    if (onCopy) {
+      setTimeout(() => {
+        setOnCopy(false);
+      }, 1000);
     }
-  };
+  }, [onCopy]);
 
-  // Handle code changes
-  const handleCodeChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const newCode = e.target.value;
-    setEditableCode(newCode);
-    onCodeChange?.(newCode);
-  };
+  const isMultiline = code.includes('\n');
 
   return (
-    <div className="relative group rounded-lg overflow-hidden bg-[#1e1e1e] font-mono">
-      {/* Header */}
-      <div className="flex items-center justify-between px-4 py-2 bg-[#2d2d2d] border-b border-[#404040]">
-        <span className="text-sm text-gray-400">{language}</span>
-        <div className="flex gap-2">
-          {editable && (
-            <button
-              onClick={() => setIsEditing(!isEditing)}
-              className="text-gray-400 hover:text-white transition-colors"
-            >
-              {isEditing ? 'View' : 'Edit'}
-            </button>
-          )}
-          <button
-            onClick={copyToClipboard}
-            className="text-gray-400 hover:text-white transition-colors"
-          >
-            <AnimatePresence>
-              {isCopied ? (
-                <motion.span
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                >
-                  Copied!
-                </motion.span>
-              ) : (
-                'Copy'
-              )}
-            </AnimatePresence>
-          </button>
-        </div>
+    <>
+      <div
+        className="invisible absolute right-3 top-3 hover:cursor-pointer border rounded-md p-1 bg-card"
+        onClick={() => {
+          setOnCopy(true);
+          handleCopyClick(code);
+        }}
+      >
+        <CopyIcon className={!onCopy ? 'block' : 'hidden'} />
+        <CheckIcon className={onCopy ? 'block' : 'hidden'} />
       </div>
-
-      {/* Code Content */}
-      <div className="relative">
-        {isEditing ? (
-          <textarea
-            value={editableCode}
-            onChange={handleCodeChange}
-            className="w-full min-h-[200px] p-4 bg-[#1e1e1e] text-white font-mono resize-y outline-none"
-            spellCheck="false"
-          />
-        ) : (
-          <pre className="p-4 m-0 overflow-x-auto">
-            {showLineNumbers && (
-              <div className="absolute left-0 top-0 p-4 select-none border-r border-[#404040]">
-                {editableCode.split('\n').map((_, i) => (
-                  <div key={i} className="text-gray-500 pr-4 text-right">
-                    {i + 1}
-                  </div>
-                ))}
-              </div>
-            )}
+      {isMultiline ? (
+        <div style={{ overflowX: 'auto' }}>
+          {isPlain ? (
+            <code>{code}</code>
+          ) : (
             <code
-              className={`language-${language}`}
               dangerouslySetInnerHTML={{
-                __html: highlightCode(editableCode),
+                __html: highlight(code),
               }}
             />
-          </pre>
-        )}
-      </div>
-    </div>
+          )}
+        </div>
+      ) : (
+        <code>{code}</code>
+      )}
+    </>
   );
-};
-
-// Optional: Enhanced version with template support
-interface Template {
-  value: string;
-  variables: Record<string, string>;
 }
-
-interface ModCodeBlockProps extends Omit<CodeBlockProps, 'code'> {
-  template: Template;
-}
-
-const ModCodeBlock: React.FC<ModCodeBlockProps> = ({ template, ...props }) => {
-  const [variables, setVariables] = useState(template.variables);
-
-  const processedCode = template.value.replace(
-    /\{\{(\w+)\}\}/g,
-    (_, key) => variables[key] || `<${key}>`
-  );
-
-  return (
-    <div className="space-y-4">
-      <div className="grid grid-cols-2 gap-4">
-        {Object.keys(template.variables).map((key) => (
-          <div key={key} className="flex flex-col">
-            <label className="text-sm text-gray-400 mb-1">{key}</label>
-            <input
-              type="text"
-              value={variables[key]}
-              onChange={(e) =>
-                setVariables((prev) => ({ ...prev, [key]: e.target.value }))
-              }
-              className="px-3 py-2 rounded bg-[#2d2d2d] border border-[#404040] text-white"
-            />
-          </div>
-        ))}
-      </div>
-      <CodeBlock {...props} code={processedCode} />
-    </div>
-  );
-};
-
-export { CodeBlock, ModCodeBlock };
