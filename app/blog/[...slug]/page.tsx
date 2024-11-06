@@ -52,7 +52,9 @@ export default async function Page(props: {
     (acc, post, index) => {
       acc[post.slugs.join('/')] = {
         ...post,
+        // @ts-ignore
         previous: posts[index - 1] || null,
+        // @ts-ignore
         next: posts[index + 1] || null,
       };
       return acc;
