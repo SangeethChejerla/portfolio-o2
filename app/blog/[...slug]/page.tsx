@@ -1,4 +1,3 @@
-// app/blog/[...slug]/page.tsx
 import PageTransition from '@/app/_components/PageTransition';
 import PostNavigation from '@/app/_components/PostNavigation';
 import NewMetadata from '@/lib/metadata';
@@ -13,7 +12,7 @@ import Header from '../../_components/Header';
 
 interface PostData {
   title: string;
-  date: Date; // Change this to `Date` to match the source data
+  date: Date;
   description?: string;
   tags?: string[];
   body: React.ComponentType<any>;
@@ -26,9 +25,7 @@ interface Page {
 }
 
 interface PageProps {
-  params: {
-    slug: string[];
-  };
+  params: Promise<{ slug: string[] }>;
 }
 
 interface PostIndex extends Page {
@@ -36,8 +33,8 @@ interface PostIndex extends Page {
   next: Page | null;
 }
 
-export default async function Page(props: PageProps) {
-  const { slug } = await props.params; // Await params here
+export default async function Page({ params }: PageProps) {
+  const { slug } = await params; // Destructure slug from params
 
   if (!slug) {
     notFound();
@@ -48,7 +45,7 @@ export default async function Page(props: PageProps) {
     notFound();
   }
 
-  const posts = source.getPages(); // Ensure correct typing here
+  const posts = source.getPages();
   const postsIndex = posts.reduce<Record<string, PostIndex>>(
     (acc, post, index) => {
       acc[post.slugs.join('/')] = {
@@ -111,11 +108,11 @@ export default async function Page(props: PageProps) {
 }
 
 export async function generateStaticParams() {
-  return source.generateParams(); // Ensure this function returns the correct params
+  return source.generateParams();
 }
 
-export async function generateMetadata(props: PageProps) {
-  const { slug } = await props.params; // Await params here
+export async function generateMetadata({ params }: PageProps) {
+  const { slug } = await params; // Destructure slug from params
 
   if (!slug) {
     notFound();
