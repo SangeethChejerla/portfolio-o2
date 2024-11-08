@@ -1,15 +1,12 @@
 import Header from '@/app/_components/Header';
 import PageTransition from '@/app/_components/PageTransition';
+import { ViewCounter } from '@/app/_components/ViewCounter';
 import { db } from '@/db/db';
 import { views } from '@/db/schema';
 import NewMetadata from '@/lib/metadata';
 import { source } from '@/lib/source';
 import { formatRelativeDate } from '@/lib/utils';
-import {
-  ArrowLeftIcon,
-  ArrowRightIcon,
-  EyeOpenIcon,
-} from '@radix-ui/react-icons';
+import { ArrowLeftIcon, ArrowRightIcon } from '@radix-ui/react-icons';
 import { sql } from 'drizzle-orm';
 import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
 import defaultMdxComponents from 'fumadocs-ui/mdx';
@@ -52,19 +49,6 @@ export default async function Page(props: {
 
   const viewCount = viewsData.length > 0 ? viewsData[0].count : 0;
 
-  await db
-    .insert(views)
-    .values({
-      slug: post.slugs.join('/'),
-      count: 1,
-    })
-    .onConflictDoUpdate({
-      target: views.slug,
-      set: {
-        count: sql`${views.count} + 1`,
-      },
-    });
-
   const formattedPost = {
     ...post,
     data: {
@@ -101,10 +85,7 @@ export default async function Page(props: {
           title={post.data.title}
           link={{ href: '/blog', text: 'Back to Blog' }}
         />
-        <div className="mb-8 flex items-center justify-end dark:text-white ">
-          <EyeOpenIcon className="mr-2 h-5 w-5" />
-          <span>{currentPost.viewCount} views</span>
-        </div>
+        <ViewCounter slug={post.slugs.join('/')} initialCount={viewCount} />
       </div>
 
       <PageTransition>
@@ -120,7 +101,6 @@ export default async function Page(props: {
             </DocsBody>
           </div>
 
-          {/* Navigation */}
           <div className="mt-16 space-y-4">
             <div className="flex justify-center">
               <h2 className="text-gray-400">Previous / Next Posts</h2>
