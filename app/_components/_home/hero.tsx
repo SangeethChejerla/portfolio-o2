@@ -25,9 +25,6 @@ const PortfolioLayout = () => {
           inViewSection = section;
         }
       });
-      if (inViewSection) {
-        setActiveSection(inViewSection.id);
-      }
     };
 
     window.addEventListener('scroll', handleScroll);

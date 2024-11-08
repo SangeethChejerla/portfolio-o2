@@ -40,7 +40,6 @@ export function Projects() {
               onMouseLeave={() => setHoveredIndex(null)}
               className="group relative flex flex-col rounded-lg bg-zinc-900"
             >
-              {/* Spotlight effect */}
               <motion.div
                 className="pointer-events-none absolute -inset-px rounded-xl opacity-0 transition duration-300 group-hover:opacity-100"
                 style={{
@@ -54,7 +53,6 @@ export function Projects() {
                 }}
               />
 
-              {/* Project Image */}
               <motion.div
                 className="relative overflow-hidden rounded-t-lg"
                 whileHover={{ scale: 1.02 }}
@@ -68,7 +66,6 @@ export function Projects() {
                 <div className="absolute inset-0 bg-gradient-to-b from-transparent to-zinc-900/50" />
               </motion.div>
 
-              {/* Project Content */}
               <div className="flex flex-col flex-grow p-6">
                 <h3 className="text-xl font-semibold text-slate-200 mb-2">
                   {project.title}
@@ -78,7 +75,6 @@ export function Projects() {
                   {project.description}
                 </p>
 
-                {/* Tags */}
                 <div className="flex flex-wrap gap-2 mb-4">
                   {project.tags.map((tag) => (
                     <span
@@ -90,7 +86,6 @@ export function Projects() {
                   ))}
                 </div>
 
-                {/* Links */}
                 <div className="flex gap-4">
                   {project.links.github && (
                     <motion.a
