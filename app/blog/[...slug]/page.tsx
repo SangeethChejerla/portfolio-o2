@@ -1,9 +1,16 @@
 import Header from '@/app/_components/Header';
 import PageTransition from '@/app/_components/PageTransition';
+import { db } from '@/db/db';
+import { views } from '@/db/schema';
 import NewMetadata from '@/lib/metadata';
 import { source } from '@/lib/source';
 import { formatRelativeDate } from '@/lib/utils';
-import { ArrowLeftIcon, ArrowRightIcon } from '@radix-ui/react-icons';
+import {
+  ArrowLeftIcon,
+  ArrowRightIcon,
+  EyeOpenIcon,
+} from '@radix-ui/react-icons';
+import { sql } from 'drizzle-orm';
 import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
 import defaultMdxComponents from 'fumadocs-ui/mdx';
 import { DocsBody } from 'fumadocs-ui/page';
@@ -27,17 +34,36 @@ interface Post {
 interface PostWithNavigation extends Post {
   previous: Post | null;
   next: Post | null;
+  viewCount: number;
 }
 
 export default async function Page(props: {
   params: Promise<{ slug: string[] }>;
 }) {
   const params = await props.params;
-
   const post = source.getPage(params.slug);
-  const posts = source.getPages();
 
   if (!post) notFound();
+
+  const viewsData = await db
+    .select()
+    .from(views)
+    .where(sql`views.slug = ${post.slugs.join('/')}`);
+
+  const viewCount = viewsData.length > 0 ? viewsData[0].count : 0;
+
+  await db
+    .insert(views)
+    .values({
+      slug: post.slugs.join('/'),
+      count: 1,
+    })
+    .onConflictDoUpdate({
+      target: views.slug,
+      set: {
+        count: sql`${views.count} + 1`,
+      },
+    });
 
   const formattedPost = {
     ...post,
@@ -45,9 +71,11 @@ export default async function Page(props: {
       ...post.data,
       date: formatRelativeDate(post.data.date),
     },
+    viewCount,
   };
 
   const MDX = formattedPost.data.body;
+  const posts = source.getPages();
   const postsIndex = posts.reduce<Record<string, PostWithNavigation>>(
     (acc, post, index) => {
       acc[post.slugs.join('/')] = {
@@ -56,6 +84,8 @@ export default async function Page(props: {
         previous: posts[index - 1] || null,
         // @ts-ignore
         next: posts[index + 1] || null,
+        viewCount:
+          viewsData.find((v) => v.slug === post.slugs.join('/'))?.count || 0,
       };
       return acc;
     },
@@ -66,33 +96,20 @@ export default async function Page(props: {
 
   return (
     <section className="min-h-screen">
-      <Header
-        title={post.data.title}
-        description={
-          post.data.description || formatRelativeDate(post.data.date)
-        }
-        link={{ href: '/blog', text: 'Back to Blog' }}
-      />
+      <div className="flex justify-between">
+        <Header
+          title={post.data.title}
+          link={{ href: '/blog', text: 'Back to Blog' }}
+        />
+        <div className="mb-8 flex items-center justify-end dark:text-white ">
+          <EyeOpenIcon className="mr-2 h-5 w-5" />
+          <span>{currentPost.viewCount} views</span>
+        </div>
+      </div>
 
       <PageTransition>
         <div className="container mx-auto px-4 py-8">
-          {/* Tags */}
-          {post.data.tags && (
-            <div className="mb-8 flex flex-wrap gap-2">
-              {post.data.tags.map((tag) => (
-                <span
-                  key={tag}
-                  className="rounded-lg bg-gradient-to-r from-indigo-500 to-purple-500 
-                           px-4 py-1 text-sm font-medium text-white"
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
-          )}
-
-          {/* Main Content */}
-          <div className="rounded-xl  p-8 ">
+          <div className="rounded-xl p-8">
             <DocsBody>
               <MDX
                 data-animate

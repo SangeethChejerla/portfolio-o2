@@ -4,6 +4,7 @@ export interface Post {
   data: {
     title: string;
     description?: string;
+    image?: string;
     date: string;
     tags?: string[];
     body: React.ComponentType;
@@ -13,6 +14,7 @@ export interface Post {
 export interface PostMetadata {
   title: string;
   date: string;
+  image?: string;
   description?: string;
   tags?: string[];
 }

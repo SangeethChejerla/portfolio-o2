@@ -1,4 +1,4 @@
-import { PROJECTS } from '@/app/constant/project';
+import { PROJECTS } from '@/constant/project';
 import { ExternalLinkIcon, GitHubLogoIcon } from '@radix-ui/react-icons';
 import { motion, useMotionTemplate, useMotionValue } from 'framer-motion';
 import { useState } from 'react';

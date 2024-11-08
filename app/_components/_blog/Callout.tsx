@@ -83,7 +83,7 @@ const sizeStyles: Record<
   },
 };
 
-export default function Callout({
+export function Callout({
   children,
   emoji,
   variant = 'default',

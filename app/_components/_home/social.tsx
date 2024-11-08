@@ -1,70 +1,72 @@
-import 'devicon/devicon.min.css';
-import { motion } from 'framer-motion';
+import React from 'react';
 
-interface Social {
-  icon: string;
-  color: string;
-  url: string; // Add a URL for each social link
+// Define the type for contact items
+interface ContactItem {
+  label: string;
+  value: string;
+  link: string;
 }
 
-const SOCIALS: Social[] = [
+const contactItems: ContactItem[] = [
+  { label: 'X', value: '@sangeeth_rch', link: 'https://x.com/sangeeth_rch' },
   {
-    icon: 'devicon-github-original',
-    color: 'group-hover:text-[#181717]',
-    url: 'https://github.com/your-username',
+    label: 'LinkedIn',
+    value: 'sangeeth-reddy-chejerla',
+    link: 'https://www.linkedin.com/in/sangeeth-reddy-chejerla-323587254/',
   },
   {
-    icon: 'devicon-linkedin-plain',
-    color: 'group-hover:text-[#0077B5]',
-    url: 'https://linkedin.com/in/your-username',
+    label: 'Email',
+    value: 'sangeethreddychejerla@gmail',
+    link: 'mailto:sangeethreddychejerla@gmail.com',
   },
   {
-    icon: 'devicon-discord-plain',
-    color: 'group-hover:text-[#7289DA]',
-    url: 'https://discord.com/users/your-discord-id',
-  },
-  {
-    icon: 'devicon-twitter-original', // Assuming there's an X icon in DevIcon, if not, you might need to use a different icon or library
-    color: 'group-hover:text-[#1DA1F2]',
-    url: 'https://x.com/your-username',
+    label: 'My Anime List',
+    value: 'Aryayama Nyx',
+    link: 'https://myanimelist.net/profile/AryayamaNyx',
   },
 ];
 
-export function Socials() {
+const ContactList: React.FC = () => {
   return (
     <section
-      id="socials"
-      className="mb-16 scroll-mt-16 md:mb-24 lg:mb-36 lg:scroll-mt-24"
+      id="social"
+      className="scroll-mt-16 lg:scroll-mt-24"
+      aria-label="social"
     >
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
-        <h2 className="text-sm font-bold uppercase tracking-widest text-emerald-400 mb-8">
-          Socials
-        </h2>
-
-        <div className="flex justify-center gap-8">
-          {SOCIALS.map((social, index) => (
-            <motion.a
-              key={social.icon}
-              href={social.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              initial={{ opacity: 0, scale: 0.8 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.3, delay: index * 0.1 }}
-              whileHover={{ scale: 1.1 }}
-              className={`group relative ${social.color}`}
-            >
-              <i className={`${social.icon} text-4xl`} />
-            </motion.a>
+      <h2 className="text-sm font-bold uppercase tracking-widest text-emerald-400 mb-8">
+        Social
+      </h2>
+      <div className="font-sans text-gray-300 w-[400px]">
+        <div className="space-y-4">
+          {contactItems.map(({ label, value, link }, index) => (
+            <div key={index} className="flex items-center">
+              <span className="text-gray-500 w-24 mr-16 hover:text-white">
+                {label}
+              </span>
+              <div className="text-right">
+                <a href={link} className="text-gray-300 hover:text-white">
+                  {value}
+                </a>
+                <svg
+                  className="ml-1 inline"
+                  width="12"
+                  height="12"
+                  viewBox="0 0 12 12"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M3.5 3C3.22386 3 3 3.22386 3 3.5C3 3.77614 3.22386 4 3.5 4V3ZM8.5 3.5H9C9 3.22386 8.77614 3 8.5 3V3.5ZM8 8.5C8 8.77614 8.22386 9 8.5 9C8.77614 9 9 8.77614 9 8.5H8ZM2.64645 8.64645C2.45118 8.84171 2.45118 9.15829 2.64645 9.35355C2.84171 9.54882 3.15829 9.54882 3.35355 9.35355L2.64645 8.64645ZM3.5 4H8.5V3H3.5V4ZM8 3.5V8.5H9V3.5H8ZM8.14645 3.14645L2.64645 8.64645L3.35355 9.35355L8.85355 3.85355L8.14645 3.14645Z"
+                    fill="#eee"
+                  />
+                </svg>
+              </div>
+            </div>
           ))}
         </div>
-      </motion.div>
+      </div>
     </section>
   );
-}
+};
 
-export default Socials;
+export default ContactList;

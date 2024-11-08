@@ -12,16 +12,22 @@ const PortfolioLayout = () => {
   const [activeSection, setActiveSection] = useState('about');
   const { scrollY } = useScroll();
 
-  // Track active section based on scroll position
   useEffect(() => {
     const handleScroll = () => {
       const sections = document.querySelectorAll('section');
+      let inViewSection = null;
       sections.forEach((section) => {
         const rect = section.getBoundingClientRect();
-        if (rect.top <= 100 && rect.bottom >= 100) {
-          setActiveSection(section.id);
+        if (
+          rect.top <= window.innerHeight / 2 &&
+          rect.bottom >= window.innerHeight / 2
+        ) {
+          inViewSection = section;
         }
       });
+      if (inViewSection) {
+        setActiveSection(inViewSection.id);
+      }
     };
 
     window.addEventListener('scroll', handleScroll);
@@ -39,14 +45,20 @@ const PortfolioLayout = () => {
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
     if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
+      const headerOffset = 64; // Adjust this value based on your sidebar width
+      const elementPosition = element.getBoundingClientRect().top;
+      const offsetPosition = elementPosition - headerOffset;
+
+      window.scrollBy({
+        top: offsetPosition,
+        behavior: 'smooth',
+      });
     }
   };
 
   return (
-    <div className="flex min-h-screen  text-zinc-100">
-      {/* Sticky Sidebar */}
-      <nav className="fixed w-64 h-screen p-8 ">
+    <div className="flex min-h-screen text-zinc-100">
+      <nav className="fixed w-64 h-screen p-8">
         <div className="space-y-8">
           <div>
             <h1 className="text-3xl font-bold bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
@@ -80,7 +92,6 @@ const PortfolioLayout = () => {
         </div>
       </nav>
 
-      {/* Main Content */}
       <main className="ml-64 w-full p-8">
         <div className="max-w-4xl mx-auto space-y-24">
           <section id="about" className="min-h-screen">
@@ -125,7 +136,13 @@ const PortfolioLayout = () => {
           </section>
 
           <section id="social" className="">
-            <Socials />
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              <Socials />
+            </motion.div>
           </section>
         </div>
       </main>

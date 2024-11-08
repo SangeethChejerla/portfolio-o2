@@ -1,4 +1,4 @@
-import { JOB_EXPERIENCE } from '@/app/constant';
+import { JOB_EXPERIENCE } from '@/constant';
 import { Link1Icon } from '@radix-ui/react-icons';
 import { motion } from 'framer-motion';
 

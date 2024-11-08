@@ -17,5 +17,15 @@ export const baseOptions: BaseLayoutProps = {
       url: '/blog',
       active: 'nested-url',
     },
+    {
+      text: 'favourite',
+      url: '/favourite',
+      active: 'nested-url',
+    },
+    {
+      text: 'guestbook',
+      url: '/guestbook',
+      active: 'nested-url',
+    },
   ],
 };

@@ -19,8 +19,8 @@ export default function Header({ title, description, link }: HeaderProps) {
       ) : (
         <div className="invisible">.</div>
       )}
-      <h1 className=" flex flex-wrap items-center break-all text-bold">
-        {title || 'sangeeth'}
+      <h1 className=" flex flex-wrap items-center break-all text-bold text-4xl">
+        {title}
       </h1>
       {description && (
         <p className="text-sm text-gray-400 w-full">{description}</p>
