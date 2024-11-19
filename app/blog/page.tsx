@@ -68,10 +68,10 @@ function BlogList() {
         {/* Search Bar */}
         <div className="relative mb-8">
           <input
-            className="w-full rounded-xl border border-gray-700 bg-gray-800/50 px-12 py-4 text-gray-100 
-                     placeholder-gray-400 backdrop-blur-lg transition-all duration-300
-                     focus:border-indigo-500 focus:bg-gray-800/70 focus:outline-none focus:ring-2 
-                     focus:ring-indigo-500/20"
+            className="w-full rounded-xl border border-gray-700  px-12 py-4 text-gray-100 
+                    
+                     focus:border-indigo-500  focus:outline-none focus:ring-2 
+                    "
             placeholder="Search blog posts..."
             onChange={(e) => setQuery(e.target.value)}
             value={query}
@@ -82,14 +82,14 @@ function BlogList() {
         {/* Blog Posts List */}
         <div className="space-y-6">
           {Object.keys(tagList).length === 0 ? (
-            <div className="flex h-40 items-center justify-center rounded-xl bg-gray-800/50 backdrop-blur-lg">
+            <div className="flex h-40 items-center justify-center rounded-xl ">
               <p className="text-gray-400">No results found :/</p>
             </div>
           ) : (
             Object.keys(tagList).map((tag) => (
               <div
                 key={tag}
-                className="overflow-hidden rounded-xl bg-gray-800/30 backdrop-blur-lg 
+                className="overflow-hidden rounded-xl  
                          transition-all duration-300 hover:bg-gray-800/50"
               >
                 {/* Tag Header */}
@@ -107,7 +107,7 @@ function BlogList() {
                   {tagList[tag].map((post: postType) => (
                     <li
                       key={post.slugs.join('/')}
-                      className="group transition-all duration-300 hover:bg-gray-800/30"
+                      className="group transition-all duration-300"
                     >
                       <Link href={post.url}>
                         <div className="flex items-center justify-between px-6 py-4">

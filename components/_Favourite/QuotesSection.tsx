@@ -1,33 +1,26 @@
-import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { QuoteType } from '@/types/fav-types';
+import React from 'react';
 
 interface QuotesSectionProps {
   items: QuoteType[];
-  onItemClick: (item: QuoteType) => void;
 }
 
-const QuotesSection = ({ items, onItemClick }: QuotesSectionProps) => {
+const QuotesSection: React.FC<QuotesSectionProps> = ({ items }) => {
   return (
-    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+    <div className="flex flex-col gap-4 w-full max-w-2xl mx-auto">
       {items.map((quote) => (
         <Card
           key={quote.id}
-          className="cursor-pointer"
-          onClick={() => onItemClick(quote)}
+          className="cursor-pointer transition-all duration-300 transform hover:scale-105 hover:shadow-lg bg-black text-white"
         >
-          <CardContent className="p-6">
-            <blockquote className="mb-4 italic">
+          <CardContent className="p-6 flex flex-col">
+            <blockquote className="mb-2 text-lg leading-relaxed italic">
               &ldquo;{quote.Quote}&rdquo;
             </blockquote>
-            <p className="text-sm text-muted-foreground">- {quote.SaidBy}</p>
-            <div className="flex flex-wrap gap-2 mt-4">
-              {quote.Tags.map((tag) => (
-                <Badge key={tag} variant="secondary">
-                  {tag}
-                </Badge>
-              ))}
-            </div>
+            <cite className="text-sm font-semibold italic">
+              — {quote.SaidBy}
+            </cite>
           </CardContent>
         </Card>
       ))}

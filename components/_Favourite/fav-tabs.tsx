@@ -1,19 +1,16 @@
 'use client';
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import {
-  Anime,
-  characters,
-  Gallery,
-  Other,
-  Quotes,
-} from '@/constant/favourite';
+import { Anime } from '@/constant/anime';
+import { characters } from '@/constant/favourite';
+import { Gallery } from '@/constant/gallery';
+import { Other } from '@/constant/other';
+import { Quotes } from '@/constant/quotes';
 import {
   AnimeType,
   CharacterType,
   GalleryItemType,
   OtherItemType,
-  QuoteType,
 } from '@/types/fav-types';
 import { useState } from 'react';
 import AnimeSection from './AnimeSection';
@@ -25,22 +22,12 @@ import SelectedItemDialog from './SelectedItemDialog';
 
 export default function Favourite() {
   const [selectedItem, setSelectedItem] = useState<
-    | AnimeType
-    | CharacterType
-    | QuoteType
-    | GalleryItemType
-    | OtherItemType
-    | null
+    AnimeType | CharacterType | GalleryItemType | OtherItemType | null
   >(null);
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
 
   const handleItemClick = (
-    item:
-      | AnimeType
-      | CharacterType
-      | QuoteType
-      | GalleryItemType
-      | OtherItemType
+    item: AnimeType | CharacterType | GalleryItemType | OtherItemType
   ) => {
     setSelectedItem(item);
     setIsDialogOpen(true);
@@ -66,7 +53,7 @@ export default function Favourite() {
         </TabsContent>
 
         <TabsContent value="quotes" className="mt-6">
-          <QuotesSection items={Quotes} onItemClick={handleItemClick} />
+          <QuotesSection items={Quotes} />
         </TabsContent>
 
         <TabsContent value="gallery" className="mt-6">

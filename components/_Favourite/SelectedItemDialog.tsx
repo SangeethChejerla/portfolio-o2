@@ -11,20 +11,13 @@ import {
   CharacterType,
   GalleryItemType,
   OtherItemType,
-  QuoteType,
 } from '@/types/fav-types';
 import Image from 'next/image';
 
 interface SelectedItemDialogProps {
   open: boolean;
   onClose: () => void;
-  item:
-    | AnimeType
-    | CharacterType
-    | QuoteType
-    | GalleryItemType
-    | OtherItemType
-    | null;
+  item: AnimeType | CharacterType | GalleryItemType | OtherItemType | null;
 }
 
 const SelectedItemDialog = ({
@@ -38,7 +31,6 @@ const SelectedItemDialog = ({
   const getTitle = (item: NonNullable<SelectedItemDialogProps['item']>) => {
     if ('AnimeName' in item) return item.AnimeName;
     if ('Name' in item) return item.Name;
-    if ('Quote' in item) return item.Quote;
     if ('Title' in item) return item.Title;
     return '';
   };
@@ -50,11 +42,11 @@ const SelectedItemDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl">
+      <DialogContent className="max-w-2xl mt-14">
         <DialogHeader>
           <DialogTitle>{getTitle(item)}</DialogTitle>
         </DialogHeader>
-        <div className="grid gap-6 mt-4 md:grid-cols-2">
+        <div className="grid gap-6 mt-4 mb-4 md:grid-cols-2">
           {'Image' in item && item.Image && (
             <div className="overflow-hidden rounded-lg">
               <Image
@@ -62,7 +54,7 @@ const SelectedItemDialog = ({
                 alt={getAltText(item)}
                 width={600}
                 height={400}
-                className="object-cover w-full h-full"
+                className="object-cover"
               />
             </div>
           )}
@@ -76,12 +68,7 @@ const SelectedItemDialog = ({
                 <p className="mb-4">{item.Personality}</p>
               </>
             )}
-            {'Context' in item && item.Context && (
-              <>
-                <h4 className="mb-2 font-semibold">Context</h4>
-                <p className="mb-4">{item.Context}</p>
-              </>
-            )}
+
             {'Inspiration' in item && item.Inspiration && (
               <>
                 <h4 className="mb-2 font-semibold">Inspiration</h4>

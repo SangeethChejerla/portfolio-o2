@@ -1,4 +1,5 @@
 import { ClerkProvider } from '@clerk/nextjs';
+import { Analytics } from '@vercel/analytics/react';
 import { RootProvider } from 'fumadocs-ui/provider';
 import { Inter } from 'next/font/google';
 import type { ReactNode } from 'react';
@@ -16,6 +17,7 @@ export default function Layout({ children }: { children: ReactNode }) {
             {' '}
             <main className="w-full mx-auto px-4 min-h-screen max-w-3xl py-12">
               {children}
+              <Analytics />
             </main>
           </RootProvider>
         </body>

@@ -25,6 +25,11 @@ const PortfolioLayout = () => {
           inViewSection = section;
         }
       });
+
+      if (inViewSection) {
+        // Type assertion to tell TypeScript that inViewSection has an id
+        setActiveSection((inViewSection as HTMLElement).id);
+      }
     };
 
     window.addEventListener('scroll', handleScroll);

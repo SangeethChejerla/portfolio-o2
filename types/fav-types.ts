@@ -20,10 +20,7 @@ export interface CharacterType {
 export interface QuoteType {
   id: number;
   Quote: string;
-  Tags: string[];
   SaidBy: string;
-  Ranking: number;
-  Context: string;
 }
 
 export interface GalleryItemType {

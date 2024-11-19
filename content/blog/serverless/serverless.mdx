@@ -1,0 +1,71 @@
+---
+title: Everything in Serverless
+description: Let's understand the gist of FastAPI.
+date: 2024-11-12
+tags: ['web development']
+---
+
+imagine this: you write code, but you don't have to worry
+about where it lives. It's like having a pet that feeds
+itself.meaning Code that just... appears when needed,Serverless JavaScript is code that runs only
+when someone asks it to. No servers to manage,
+no constant running costs. It's like a part-time job for your code.
+
+It runs on what we call an edge network or through
+HTTP caching services. Think of it like... instead of going to the
+main library for a book, you find it at a closer branch. Faster, right?
+
+it's about speed and efficiency This setup reduces what we call
+cold starts—the delay when a server has to wake up from
+a nap to do some work. Serverless JavaScript is always
+alert, always ready.
+
+### how does one deploy such a thing?
+
+You write your JavaScript functions, and services like Cloudflare
+Workers take care of the rest. It's like sending a letter;
+you write it, drop it in the mailbox, and someone else delivers it.
+
+There's always a catch, isn't there? The catch is, you're somewhat
+at the mercy of these services. If they go down, so does your code.
+But, for the trade-off of not managing servers? Many developers
+find it's worth it. But for us, the end-users, it's just... effortless.
+
+Here's the deal: serverless functions, like AWS Lambda or Cloudflare
+Workers, can indeed start up quickly. But, there's this thing called a
+cold start. Imagine waking up from a deep nap to answer a question.
+That's what happens when a function hasn't been used in a while.
+It needs to spin up, which takes time. Not ideal for applications where
+every millisecond counts.
+
+Serverless can be cheaper if you're running small
+if your code runs like a marathon, not a sprint, you might find yourself
+with a bill that's... unexpectedly large. It's pay-per-use, but if "use"
+means "constantly," you're better off with a traditional server setup.
+
+### But isn't it supposed to save money?
+
+In theory, yes. But think of it like buying snacks.
+A little here and there, no big deal. But if you're munching all day, every day?
+That's when you realize your wallet's lighter than your snack bag.
+
+### What about other drawbacks?
+
+where do I start? Vendor Lock-in - once you're deep into one serverless
+ecosystem, moving out feels like trying to escape quicksand.
+Debugging becomes a game of hide and seek. And Complexity?
+Sure, you don't manage servers, but now you're juggling a dozen
+different services, each with its own quirks.
+
+let's not forget Performance Variability. Your function might be lightning
+fast one moment, then take a leisurely stroll the next due to cold starts
+or resource allocation.
+
+### why use serverless at all?
+
+despite its flaws, for certain use cases, it's brilliant. Need something
+scalable, event-driven, and you're okay with a bit of unpredictability?
+Serverless is your friend. But for anything requiring consistent performance
+or long-running processes? Maybe stick with traditional servers or containers.
+
+Varnish is what we call an HTTP reverse proxy and cache. It sits in front of your web server, like a bouncer at a club, deciding what gets in and out. When someone requests something from your website, Varnish checks if it has that content stored. If yes, it serves it up faster than you can say "cache hit."

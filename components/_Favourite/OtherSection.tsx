@@ -1,4 +1,3 @@
-// sections/OtherSection.tsx
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { OtherItemType } from '@/types/fav-types';
 import Image from 'next/image';
@@ -34,14 +33,20 @@ const OtherSection = ({ items, onItemClick }: OtherSectionProps) => {
                       className="object-cover w-full h-48"
                     />
                   </CardHeader>
-                  <CardContent className="p-4">
-                    <h4 className="text-lg font-semibold">{item.Title}</h4>
-                    <p className="mt-2 text-sm text-muted-foreground">
-                      By {item.Artist}
-                    </p>
-                    <p className="mt-1 text-sm text-muted-foreground">
-                      Year: {item.Year}
-                    </p>
+                  <CardContent className="p-6 flex-grow flex flex-col justify-between">
+                    {' '}
+                    {/* Adjusted for more space */}
+                    <div>
+                      <h4 className="text-lg font-semibold">{item.Title}</h4>
+                      <p className="mt-2 text-sm text-muted-foreground">
+                        By {item.Artist}
+                      </p>
+                      <p className="mt-1 text-sm text-muted-foreground">
+                        Year: {item.Year}
+                      </p>
+                    </div>
+                    {/* Additional space at the bottom */}
+                    <div className="flex-grow"></div>
                   </CardContent>
                 </Card>
               ))}

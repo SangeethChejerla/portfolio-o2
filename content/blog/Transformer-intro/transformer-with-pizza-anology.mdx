@@ -1,0 +1,133 @@
+---
+title: Transformers with anology
+description: Full step by step working process of a transformer.
+date: 2024-11-19
+tags: ['AI']
+---
+
+## The Pizza Transformer Analogy
+
+### 1. Tokenization: Slicing the Pizza
+
+**Sentence:** "She ordered a pizza with extra cheese."
+
+**Tokens:** ["She", "ordered", "a", "pizza", "with", "extra", "cheese"]
+
+**Token IDs:** Imagine each slice of pizza has a unique barcode (Token ID). These barcodes help the kitchen staff (model) identify each slice.
+
+### 2. Embedding: Teleporting the Pizza
+
+Think of embedding as a teleportation device that converts each pizza slice (token) into a vector in a high-dimensional space. This teleportation helps the model understand the meaning and context of each slice.
+
+**Embedding Vectors (simplified):**
+
+- "She": [0.1, 0.3, 0.5]
+- "ordered": [0.2, 0.4, 0.6]
+- "a": [0.3, 0.1, 0.4]
+- "pizza": [0.4, 0.5, 0.2]
+- "with": [0.5, 0.6, 0.3]
+- "extra": [0.6, 0.2, 0.5]
+- "cheese": [0.7, 0.2, 0.5]
+
+### 3. Positional Encoding: Adding Toppings in Order
+
+Just like adding toppings in the correct order makes a pizza delicious, positional encoding adds information about the order of slices (tokens) to the vectors. This ensures the pizza (sentence) is assembled correctly.
+
+**Positional Encodings:**
+
+- Position 1: [0.01, 0.02, 0.03]
+- Position 2: [0.02, 0.04, 0.06]
+- Position 3: [0.03, 0.06, 0.09]
+- Position 4: [0.04, 0.08, 0.12]
+- Position 5: [0.05, 0.10, 0.15]
+- Position 6: [0.06, 0.12, 0.18]
+- Position 7: [0.07, 0.14, 0.21]
+
+### 4. Self-Attention: The Pizza Chef's Focus
+
+The pizza chef (model) applies self-attention to determine the relevance of each slice to the others. This step involves calculating attention weights that highlight important relationships between slices.
+
+**Attention Weights (simplified):**
+
+- "pizza" -> "ordered": high attention weight
+- "pizza" -> "cheese": medium attention weight
+- "pizza" -> "with": low attention weight
+
+### 5. Multi-Head Self-Attention: The Kitchen Team
+
+The kitchen team (multiple attention heads) works together to capture different aspects of the pizza. Each team member (head) focuses on a different relationship, such as identifying toppings, actions, or other properties.
+
+**Example Heads:**
+
+- **Head 1:** Focuses on the subject ("She")
+- **Head 2:** Focuses on the action ("ordered")
+- **Head 3:** Focuses on the object ("pizza")
+
+### 6. Feed-Forward Network: The Secret Sauce
+
+The processed information goes through a feed-forward network, which is like the secret sauce that enhances the pizza's flavor. It captures additional information or patterns within the pizza.
+
+**Functions of Feed-Forward Network:**
+
+- Identifying patterns in the sequence of slices (e.g., recognizing a common topping-base structure).
+- Learning non-linear relationships between slices that self-attention might not directly capture.
+
+### 7. Layer Normalization: The Quality Control
+
+After each sub-layer (self-attention and feed-forward), the model applies layer normalization, which is like quality control ensuring consistency and stability in the pizza-making process.
+
+**Layer Normalization:**
+
+- Normalizes the output to have a mean of 0 and a standard deviation of 1, ensuring the pizza is perfectly balanced.
+
+### 8. Encoder: The Prep Kitchen
+
+The encoder is like the prep kitchen where the input sequence (pizza order) is processed and prepared for the main kitchen (decoder). It consists of multiple layers, each containing a multi-head self-attention mechanism and a feed-forward network.
+
+**Encoder Layers:**
+
+- **Input Embedding:** Converts tokens to embeddings.
+- **Positional Encoding:** Adds positional information.
+- **Multi-Head Self-Attention:** Captures relationships between tokens.
+- **Feed-Forward Network:** Captures additional patterns.
+- **Layer Normalization:** Ensures stability.
+
+### 9. Decoder: The Main Kitchen
+
+The decoder is the main kitchen where the output sequence (final pizza) is generated. It takes the encoder's output and the previously generated tokens as input, consisting of multiple layers with a multi-head self-attention mechanism, a multi-head attention mechanism (attending to the encoder's output), and a feed-forward network.
+
+**Decoder Layers:**
+
+- **Input Embedding:** Converts tokens to embeddings.
+- **Positional Encoding:** Adds positional information.
+- **Masked Multi-Head Self-Attention:** Prevents attending to future tokens.
+- **Multi-Head Attention (Encoder-Decoder):** Attends to the encoder's output.
+- **Feed-Forward Network:** Captures additional patterns.
+- **Layer Normalization:** Ensures stability.
+
+### 10. Softmax: The Final Taste Test
+
+The final layer of the decoder is a softmax layer, which is like the final taste test that converts the output logits into probabilities. This step ensures that the generated pizza (sentence) is coherent and delicious.
+
+**Softmax Function:**
+
+- Converts logits to probabilities.
+- Ensures the sum of probabilities is 1, making the pizza perfectly balanced.
+
+### 11. Logits: The Pizza Toppings
+
+Logits are like the raw toppings before they are added to the pizza. The softmax layer (final taste test) converts these raw toppings into the perfect combination for the final pizza.
+
+### 12. Output Generation: Serving the Pizza
+
+The decoder generates the output sequence token by token, using the probabilities from the softmax layer to select the most likely next token. This is like serving the pizza slice by slice, ensuring each slice is perfectly placed.
+
+**Output Generation Process:**
+
+- Start with a special start token (the pizza base).
+- Generate the next token based on the highest probability (adding the next topping).
+- Repeat until a special end token is generated (the pizza is complete).
+
+## Conclusion
+
+The transformer model is like a high-tech pizza kitchen, using self-attention mechanisms to understand and generate delicious pizzas (sentences). By slicing the pizza into tokens, embedding them into a high-dimensional space, adding positional information, applying self-attention, and using a feed-forward network, the model can capture complex relationships and patterns in the data. The encoder prepares the input sequence, while the decoder generates the output sequence, ensuring the pizza is coherent and delicious.
